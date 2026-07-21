@@ -160,6 +160,42 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
 .err{color:var(--warn);font-size:12.5px;font-weight:600;margin:10px 16px 0;display:none}
 /* hide action buttons + footer while capturing the full page image */
 .capturing .actions{display:none!important}
+
+/* Offscreen branded results card for image export (solid colors = crisp) */
+.capcard{position:fixed;left:-10000px;top:0;width:680px;background:#0B1424;padding:34px 34px 30px;font-family:"Plus Jakarta Sans",sans-serif;color:#F3F1EA}
+.cap-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.cap-head img{height:48px;width:auto;display:block}
+.cap-head .ttl{font-size:14px;font-weight:700;color:#8FA0B8;text-align:right}
+.cap-hero{background:#13273F;border:1px solid rgba(231,200,116,.42);border-radius:18px;padding:22px}
+.cap-hero .c{font-size:14px;color:#B9C6DA;font-weight:700;margin:0}
+.cap-hero .n{font-size:42px;font-weight:800;color:#E7C874;margin:8px 0 0;letter-spacing:-.02em}
+.cap-hero.neg .n{color:#F0A488}
+.cap-hero .s{font-size:13.5px;color:#AFBED2;margin:9px 0 0}
+.cap-hero .p{display:inline-block;margin-top:14px;background:rgba(231,200,116,.16);border:1px solid rgba(231,200,116,.42);color:#E7C874;font-size:13px;font-weight:800;padding:7px 15px;border-radius:999px}
+.cap-hero.neg .p{background:rgba(224,113,78,.16);border-color:rgba(224,113,78,.42);color:#F0A488}
+.cap-pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.cap-cell{background:#101C30;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px}
+.cap-cell .k{font-size:12.5px;color:#8FA0B8;font-weight:600;margin:0 0 6px}
+.cap-cell .v{font-size:22px;font-weight:800;margin:0;letter-spacing:-.01em}
+.cap-cell .d{font-size:11px;color:#6E7C92;margin:7px 0 0}
+.cap-cmp{background:#101C30;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;margin-top:14px}
+.cap-cmp h4{font-size:13px;font-weight:800;margin:0 0 14px}
+.cap-bar{margin-bottom:13px}.cap-bar:last-child{margin-bottom:0}
+.cap-bar .t{display:flex;justify-content:space-between;font-size:12.5px;color:#B9C6DA;font-weight:600;margin-bottom:6px}
+.cap-bar .t b{color:#fff;font-weight:800}
+.cap-track{height:14px;background:#26344A;border-radius:8px;overflow:hidden}
+.cap-fill{height:100%;border-radius:8px}
+.cap-fill.a{background:#6C7A90}.cap-fill.b{background:#E7C874}
+.cap-rows{margin-top:14px;background:#101C30;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden}
+.cap-li{display:flex;justify-content:space-between;gap:12px;padding:13px 16px;font-size:13px;border-top:1px solid rgba(255,255,255,.06)}
+.cap-li:first-child{border-top:0}
+.cap-li .lk{color:#8FA0B8;font-weight:600}
+.cap-li .lv{font-weight:800;color:#F3F1EA;white-space:nowrap}
+.cap-li.sub .lk{padding-left:12px;font-weight:500;color:#6E7C92}
+.cap-li.sub .lv{color:#B9C6DA;font-weight:700}
+.cap-li.total{background:rgba(231,200,116,.13)}
+.cap-li.total .lk{color:#F6E4A8;font-weight:800}.cap-li.total .lv{color:#E7C874}
+.cap-foot{margin-top:20px;text-align:center;font-size:11px;color:#6E7C92}
 </style>
 </head>
 <body>
@@ -264,6 +300,27 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
   </div>
 </div>
 
+<div class="capcard" id="capCard">
+  <div class="cap-head"><img id="capLogo" alt="WELTOWN by CariProperti"><div class="ttl">Simulasi Take Over KPR</div></div>
+  <div class="cap-hero" id="capHero">
+    <p class="c" id="capCap">Total Penghematan Take Over KPR</p>
+    <p class="n" id="capBig">Rp 0</p>
+    <p class="s" id="capSub"></p>
+    <span class="p" id="capVerdict">—</span>
+  </div>
+  <div class="cap-pair">
+    <div class="cap-cell"><p class="k">Angsuran KPR Pertama</p><p class="v" id="capA1">Rp 0</p><p class="d" id="capA1d"></p></div>
+    <div class="cap-cell"><p class="k">Angsuran Setelah Take Over</p><p class="v" id="capA2">Rp 0</p><p class="d" id="capA2d"></p></div>
+  </div>
+  <div class="cap-cmp">
+    <h4>Total Bunga &amp; Biaya Sepanjang KPR</h4>
+    <div class="cap-bar"><div class="t"><span>Tanpa Take Over</span><b id="capBarAamt">Rp 0</b></div><div class="cap-track"><div class="cap-fill a" id="capBarA"></div></div></div>
+    <div class="cap-bar"><div class="t"><span>Dengan Take Over</span><b id="capBarBamt">Rp 0</b></div><div class="cap-track"><div class="cap-fill b" id="capBarB"></div></div></div>
+  </div>
+  <div class="cap-rows" id="capRows"></div>
+  <div class="cap-foot">Estimasi. Angka aktual mengikuti kebijakan bank. — Dibuat dengan WELTOWN by CariProperti</div>
+</div>
+
 <div class="toast" id="toast">Tersalin</div>
 
 <script>
@@ -355,17 +412,31 @@ function render(){
   const mx=Math.max(r.noTO,r.withTO);
   $("barAamt").textContent=rp(r.noTO); $("barBamt").textContent=rp(r.withTO);
   requestAnimationFrame(()=>setTimeout(()=>{ $("barA").style.width=(r.noTO/mx*100)+"%"; $("barB").style.width=(r.withTO/mx*100)+"%"; },60));
-  const rows=$("rows"); rows.innerHTML="";
-  const add=(k,v,c="")=>{ const d=document.createElement("div"); d.className="li "+c; d.innerHTML=`<span class="lk">${k}</span><span class="lv">${v}</span>`; rows.appendChild(d); };
-  add("Sisa Pokok Saat Take Over",rp(r.balTO));
-  add("Total Bunga KPR Lama (Tanpa Take Over)",rp(r.noTO));
-  add("Bunga Sudah Dibayar Di KPR Lama",rp(r.paid1));
-  add("Total Bunga KPR Baru",rp(r.k2.total));
-  add("Biaya Take Over",rp(r.cost));
-  add("— Provisi",rp(r.cProv),"sub"); add("— Asuransi",rp(r.cAsur),"sub"); add("— Penalti",rp(r.cPen),"sub");
-  add("Total Bunga & Biaya Dengan Take Over",rp(r.withTO));
-  add(pos?"Total Penghematan":"Tambahan Beban",rp(Math.abs(r.savings)),"total");
+  const R=[
+    ["Sisa Pokok Saat Take Over",rp(r.balTO),""],
+    ["Total Bunga KPR Lama (Tanpa Take Over)",rp(r.noTO),""],
+    ["Bunga Sudah Dibayar Di KPR Lama",rp(r.paid1),""],
+    ["Total Bunga KPR Baru",rp(r.k2.total),""],
+    ["Biaya Take Over",rp(r.cost),""],
+    ["— Provisi",rp(r.cProv),"sub"],["— Asuransi",rp(r.cAsur),"sub"],["— Penalti",rp(r.cPen),"sub"],
+    ["Total Bunga & Biaya Dengan Take Over",rp(r.withTO),""],
+    [pos?"Total Penghematan":"Tambahan Beban",rp(Math.abs(r.savings)),"total"]
+  ];
+  const rows=$("rows"); rows.innerHTML=""; const caprows=$("capRows"); caprows.innerHTML="";
+  R.forEach(([k,v,c])=>{
+    rows.insertAdjacentHTML("beforeend",`<div class="li ${c}"><span class="lk">${k}</span><span class="lv">${v}</span></div>`);
+    caprows.insertAdjacentHTML("beforeend",`<div class="cap-li ${c}"><span class="lk">${k}</span><span class="lv">${v}</span></div>`);
+  });
+  $("capHero").classList.toggle("neg",!pos);
+  $("capCap").textContent=$("hero").querySelector(".cap").textContent;
+  $("capBig").textContent=rp(Math.abs(r.savings));
+  $("capSub").textContent=$("heroSub").textContent;
+  $("capA1").textContent=rp(r.k1.fixInst); $("capA2").textContent=rp(r.k2.fixInst);
+  $("capA1d").textContent=$("ang1d").textContent; $("capA2d").textContent=$("ang2d").textContent;
+  $("capBarAamt").textContent=rp(r.noTO); $("capBarBamt").textContent=rp(r.withTO);
+  $("capBarA").style.width=(r.noTO/mx*100)+"%"; $("capBarB").style.width=(r.withTO/mx*100)+"%";
   insight(r);
+  $("capVerdict").textContent=VSHORT[lastLevel];
   return true;
 }
 
@@ -374,7 +445,7 @@ function fullInsightText(){ if(!last)return""; const r=last;
   return [
     "*Simulasi Take Over KPR \u2014 WELTOWN*","",
     `Rekomendasi: ${VERDICT[lastLevel]}`,"",
-    "AI Insight:",bullets,"",
+    bullets,"",
     "Ringkasan Angka:",
     `\u2022 Sisa Plafon: ${rp(r.P)}`,
     `\u2022 Take Over Bulan Ke-${r.tom}`,
@@ -403,21 +474,15 @@ function recommendText(){ if(!last)return""; const r=last;
 
 function toast(m){ const t=$("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),1900); }
 
-/* Full-page capture: from top of card through AI Insight (actions+footer hidden) */
-async function captureFullPage(){
+/* Capture the branded results card only (solid colors -> always crisp) */
+async function captureCard(){
   if(typeof html2canvas==="undefined") throw new Error("nolib");
-  const card=$("appcard"); const sy=window.pageYOffset||0;
-  card.classList.add("capturing"); window.scrollTo(0,0);
-  try{
-    try{ if(document.fonts&&document.fonts.ready) await document.fonts.ready; }catch(e){}
-    try{ await Promise.all([...card.querySelectorAll("img")].map(im=>(im.decode?im.decode().catch(()=>{}):Promise.resolve()))); }catch(e){}
-    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
-    const bg=(getComputedStyle(document.documentElement).getPropertyValue("--bg")||"#0A0E17").trim();
-    const W=Math.ceil(card.scrollWidth), H=Math.ceil(card.scrollHeight); let scale=3; const CAP=16000000;
-    if(W*H*scale*scale>CAP) scale=Math.max(2,Math.sqrt(CAP/(W*H)));
-    return await html2canvas(card,{scale,backgroundColor:bg,logging:false,useCORS:true,
-      width:W,height:H,windowWidth:W,windowHeight:H,scrollX:0,scrollY:0});
-  } finally { card.classList.remove("capturing"); window.scrollTo(0,sy); }
+  const card=$("capCard");
+  try{ if(document.fonts&&document.fonts.ready) await document.fonts.ready; }catch(e){}
+  try{ await Promise.all([...card.querySelectorAll("img")].map(im=>(im.decode?im.decode().catch(()=>{}):Promise.resolve()))); }catch(e){}
+  const W=Math.ceil(card.scrollWidth), H=Math.ceil(card.scrollHeight); let scale=3; const CAP=16000000;
+  if(W*H*scale*scale>CAP) scale=Math.max(2,Math.sqrt(CAP/(W*H)));
+  return await html2canvas(card,{scale,backgroundColor:"#0B1424",logging:false,useCORS:true,width:W,height:H,windowWidth:W,windowHeight:H});
 }
 function canvasBlob(c){ return new Promise(res=>c.toBlob(res,"image/png",0.95)); }
 function fname(){ const d=new Date(),s=d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0"); return `Simulasi_TakeOver_KPR_WELTOWN_${s}.png`; }
@@ -431,7 +496,7 @@ $("copyBtn").addEventListener("click",async()=>{ const txt=fullInsightText();
 
 $("capBtn").addEventListener("click",async()=>{
   const b=$("capBtn"),old=b.innerHTML; b.disabled=true; b.textContent="Menyiapkan gambar…";
-  try{ const c=await captureFullPage(),blob=await canvasBlob(c),url=URL.createObjectURL(blob);
+  try{ const c=await captureCard(),blob=await canvasBlob(c),url=URL.createObjectURL(blob);
     const a=document.createElement("a"); a.href=url; a.download=fname(); document.body.appendChild(a); a.click(); a.remove();
     setTimeout(()=>URL.revokeObjectURL(url),4000); toast("Gambar tersimpan ✓");
   }catch(e){ toast(e.message==="nolib"?"Modul gambar gagal dimuat":"Gagal membuat gambar"); }
@@ -441,7 +506,7 @@ $("waBtn").addEventListener("click",async()=>{
   const b=$("waBtn"),old=b.innerHTML; b.disabled=true; b.textContent="Menyiapkan…";
   const text=fullInsightText();
   try{
-    const c=await captureFullPage(); const blob=await canvasBlob(c);
+    const c=await captureCard(); const blob=await canvasBlob(c);
     const file=new File([blob],fname(),{type:"image/png"});
     if(navigator.canShare&&navigator.canShare({files:[file]})){
       await navigator.share({files:[file],text,title:"Simulasi Take Over KPR"}); b.disabled=false;b.innerHTML=old; return;
@@ -454,7 +519,7 @@ $("waBtn").addEventListener("click",async()=>{
   }finally{ b.disabled=false; b.innerHTML=old; }
 });
 
-updCost(); syncMax(); render();
+updCost(); syncMax(); try{$("capLogo").src=document.querySelector(".foot-logo img").src;}catch(e){} render();
 </script>
 </body>
 </html>
